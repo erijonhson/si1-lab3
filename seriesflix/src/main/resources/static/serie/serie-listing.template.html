@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="row">
+    <div ng-repeat="serie in $ctrl.series.list track by $index">
+      <div class="col-md-4">
+        <div class="thumbnail">
+        
+          <a href="#!/serie/{{serie.imdbID}}" >
+            <img src="{{serie.Poster}}" alt="{{serie.Title}}" style="width:100%">
+            <div class="caption">
+              <p>{{serie.Title}}</p>
+            </div>
+          </a>
+          
+          <div class="btn-group btn-group-justified text-center" role="group" aria-label="...">
+            <button type="button" 
+                ng-if="!$ctrl.ehVisualizacaoDePerfil()"
+                ng-click="$ctrl.adicioneSerieDeUsuario(serie)">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              <!-- + -->
+              Perfil
+            </button>
+            <button type="button" 
+                ng-if="$ctrl.ehSerieDeUsuario(serie) && $ctrl.ehVisualizacaoDePerfil()" 
+                ng-click="$ctrl.removeSerieDeUsuario(serie)">
+              <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+              <!-- - -->
+              Perfil
+            </button>
+            <button type="button"
+                ng-if="!$ctrl.ehSerieDeUsuario(serie) && !$ctrl.ehWatchList(serie)" 
+                ng-click="$ctrl.adicioneWatchList(serie)">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              <!-- + -->
+              Watchlist
+            </button>
+            <button type="button"
+                ng-if="$ctrl.ehWatchList(serie)" 
+                ng-click="$ctrl.removeWatchList(serie)">
+              <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+              <!-- - -->
+              Watchlist
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

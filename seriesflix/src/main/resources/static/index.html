@@ -1,0 +1,102 @@
+<!-- https://blackrockdigital.github.io/startbootstrap-logo-nav/ -->
+
+<!doctype html>
+
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seriesflix App</title>
+    <meta name="description" content="Lab2 de SI1.">
+
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="app.css" >
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+  </head>
+  <body ng-app="app">
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#!/home">
+                    <img src="img/sflix.jpg" alt="Sflix">
+                </a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse " id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="#!/perfil">Perfil</a>
+                    </li>
+                    <li>
+                        <a href="#!/watchlist">Watchlist</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container -->
+    </nav>
+
+    <div class="view-container">
+      <div ng-view class="view-frame"></div>
+    </div>
+
+    <!-- angular -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.min.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.min.js"></script>
+
+    <!-- Angular Material Library -->
+    <script src="bower_components/angular-material/angular-material.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- components -->
+    <script src="app.module.js"></script>
+    <script src="app.config.js"></script>
+
+    <script src="serie/serie.module.js"></script>
+    <script src="serie/serie.component.js"></script>
+    <script src="serie/serie-factory.js"></script>
+    <script src="serie/serie.service.js"></script>
+    <script src="serie/serie-listing.component.js"></script>
+    <script src="serie/find-series.component.js"></script>
+
+    <script src="user/user.module.js"></script>
+    <script src="user/user.service.js"></script>
+    <script src="user/user-serie-list.component.js"></script>
+    <script src="user/watchlist.component.js"></script>
+
+    <script src="modal/modal.module.js"></script>
+    <script src="modal/modal.service.js"></script>
+
+  </body>
+</html>
