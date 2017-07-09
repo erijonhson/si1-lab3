@@ -17,7 +17,8 @@ angular.
       this.Language = serieOmdbapi.Language;
       this.Country = serieOmdbapi.Country;
       this.Awards = serieOmdbapi.Awards;
-      this.Poster = serieOmdbapi.Poster;
+      this.Poster = serieOmdbapi.Poster != "N/A" ? 
+          serieOmdbapi.Poster : "img/no-img.jpg";
       this.Ratings = serieOmdbapi.Ratings;
       this.Metascore = serieOmdbapi.Metascore;
       this.imdbRating = serieOmdbapi.imdbRating;
