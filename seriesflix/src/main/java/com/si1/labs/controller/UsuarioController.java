@@ -12,8 +12,16 @@ import com.si1.labs.model.Usuario;
 @RestController
 public class UsuarioController {
 
+	// TODO: Fazer serviços:
+	// login, logout, excluir conta 
+	// CRUD serieEmPerfil e serieEmWatchlist #lascou
+	// SerieService para getListaSerie e getSerieById do OMDBAPI
+	// pois é, isso não é serviço da view, é serviço do controller
+	// Tutorial: https://github.com/hightechcursos/springboot/tree/aula07
+
 	final static Logger logger = Logger.getLogger(MainController.class);
-	
+
+	// teste rápido
 	@RequestMapping(method=RequestMethod.GET, value="/usuario")
 	public ResponseEntity<Usuario> buscar() {
 		
@@ -25,5 +33,5 @@ public class UsuarioController {
 		usuario.setNome("José");
 		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
 	}
-	
+		
 }

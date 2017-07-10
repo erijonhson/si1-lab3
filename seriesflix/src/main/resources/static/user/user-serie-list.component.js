@@ -1,6 +1,5 @@
 'use strict';
 
-// Registrar componente `user`
 angular.
   module('user').
   component('userSerieList', {

@@ -1,6 +1,5 @@
 'use strict';
 
-// Registrar componente `watchList`
 angular.
   module('user').
   component('watchlist', {

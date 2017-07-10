@@ -15,7 +15,7 @@ public class MainController {
 		if (logger.isInfoEnabled()) {
 			logger.info("Request to /");
 		}
-		return "index.html";
+		return "index";
 	}
 
 }
