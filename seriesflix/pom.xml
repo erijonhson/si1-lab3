@@ -63,6 +63,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
+		<dependency>
+    	<!-- trabalhar fora de casa... obrigado Erick (https://github.com/ericbreno/how-to-spring-boot) -->
+    		<groupId>com.h2database</groupId>
+    		<artifactId>h2</artifactId>
+		</dependency>
 		<!--
 		https://spring.io/guides/tutorials/spring-security-and-angular-js/ 
 		https://github.com/spring-guides/tut-spring-security-and-angular-js/blob/master/spring-session/ui/src/main/java/demo/UiApplication.java 

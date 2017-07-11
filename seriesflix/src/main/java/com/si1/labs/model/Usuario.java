@@ -1,15 +1,18 @@
 package com.si1.labs.model;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class Usuario implements Serializable {
@@ -18,21 +21,50 @@ public class Usuario implements Serializable {
 
 	@Id
 	@GeneratedValue
-	private Integer id;
+	@Column(name="id_usuario")
+	private Long id;
+	
+	@Column(name="nome", nullable = false)
 	private String nome;
+	
+	@Column(name="email", unique=true)
 	private String email;
+	
+	@Column(name="senha", nullable = false)
 	private String senha;
+	
+	@Column(name="apelido", nullable = false)
 	private String apelido;
 
-	// https://docs.jboss.org/hibernate/orm/3.6/reference/pt-BR/html/collections.html#collections-foreignkeys
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+	@JsonManagedReference
 	private Set<Serie> series;
-	private Set<Serie> watchlist;
 
-	public Integer getId() {
+	public Usuario() {
+		this.series = new HashSet<Serie>();
+	}
+	
+	public boolean adicionaSerie(Serie serie) {
+        boolean ok = this.series.add(serie);
+        if (ok) {
+        	serie.setUsuario(this); // mantém a consistência no BD
+        }
+        return ok;
+    }
+	
+	public boolean removeSerie(Serie serie) {
+		boolean ok = this.series.remove(serie);
+        if (ok) {
+        	serie.setUsuario(null); // mantém a consistência no BD
+        }
+        return ok;
+    }
+	
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -68,36 +100,38 @@ public class Usuario implements Serializable {
 		this.apelido = apelido;
 	}
 
-	@ManyToMany(
-		// targetEntity = org.hibernate.test.metadata.manytomany.Serie.class, 
-		cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinTable(
-		name = "USUARIO_SERIES", 
-		joinColumns = @JoinColumn(name = "USUARIO_ID"), 
-		inverseJoinColumns = @JoinColumn(name = "SERIE_ID"))
-		// aqui tem que existir as notas do usuário para determinada série
 	public Set<Serie> getSeries() {
-		return series;
+		Set<Serie> listSeguro = Collections.unmodifiableSet(this.series);
+		return listSeguro;
 	}
 
 	public void setSeries(Set<Serie> series) {
 		this.series = series;
 	}
 
-	@ManyToMany(
-		// targetEntity = org.hibernate.test.metadata.manytomany.Serie.class, 
-		cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-	@JoinTable(
-		name = "USUARIO_WATCHLIST", 
-		joinColumns = @JoinColumn(name = "USUARIO_ID"), 
-		inverseJoinColumns = @JoinColumn(name = "SERIE_ID"))
-	// aqui tem que existir as notas do usuário para determinada série
-	public Set<Serie> getWatchlist() {
-		return watchlist;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		return result;
 	}
 
-	public void setWatchlist(Set<Serie> watchlist) {
-		this.watchlist = watchlist;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		return true;
 	}
 
 }
