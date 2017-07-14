@@ -34,7 +34,7 @@ public class UsuarioService {
 			usuario.getSenha().equals(usuarioBD.getSenha())) {
 			return usuarioBD;
 		} else {
-			return null;
+			throw new RuntimeException("Usuário não encontrado");
 		}
 	}
 

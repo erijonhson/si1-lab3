@@ -1,7 +1,8 @@
-'use strict';
-
-angular.
-  module('user').
+(function () {
+  
+  'use strict';
+  
+  angular.module('user').
   component('watchlist', {
     templateUrl: 'user/watchlist.template.html',
     controller: ['userService',
@@ -10,3 +11,5 @@ angular.
         ctrl.watchList = userService.watchList;
     }]
   });
+  
+})();

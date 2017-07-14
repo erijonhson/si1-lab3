@@ -1,3 +1,7 @@
-'use strict';
-
-angular.module('serie', []);
+(function () {
+  
+  'use strict';
+  
+  angular.module('serie', []);
+  
+})();

@@ -1,105 +1,27 @@
 package com.si1.labs.controller;
 
-import java.util.Collection;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.si1.labs.model.Serie;
 import com.si1.labs.model.Usuario;
 import com.si1.labs.service.UsuarioService;
 
 @RestController
 @RequestMapping(value = "/usuario")
 public class UsuarioController {
-
-	// TODO: Fazer serviços:
-	// login, logout, excluir conta 
-	// CRUD serieEmPerfil e serieEmWatchlist #lascou
-	// Tutorial: https://github.com/hightechcursos/springboot/tree/aula07
-	// https://github.com/ericbreno/how-to-spring-boot
 	
 	@Autowired
 	UsuarioService usuarioService;
 	
-	Usuario usuarioSession;
-
-	final static Logger logger = Logger.getLogger(MainController.class);
-	
-	@RequestMapping(
-			method = RequestMethod.POST, 
-			value = "/adicionaSerie", 
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Usuario> adicionaSerie(@RequestBody Serie serie) {
+	final static Logger logger = Logger.getLogger(UsuarioController.class);
 		
-		if (logger.isInfoEnabled()) {
-			logger.info("Request to /adicionaSerie");
-		}
-		
-		if (!isUsuarioLogado()) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		
-		boolean ok = usuarioSession.adicionaSerie(serie);
-		if (ok) {
-			usuarioSession = usuarioService.atualizar(usuarioSession);
-		}
-		HttpStatus status = ok ? HttpStatus.CREATED : HttpStatus.NOT_ACCEPTABLE;
-		
-		return new ResponseEntity<>(usuarioSession, status);
-	}
-	
-	@RequestMapping(
-			method = RequestMethod.POST, 
-			value = "/removeSerie", 
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Usuario> removeSerie(@RequestBody Serie serie) {
-		
-		if (logger.isInfoEnabled()) {
-			logger.info("Request to /removeSerie");
-		}
-		
-		if (!isUsuarioLogado()) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		
-		boolean ok = usuarioSession.removeSerie(serie);
-		HttpStatus status = ok ? HttpStatus.OK : HttpStatus.NOT_ACCEPTABLE;
-		
-		return new ResponseEntity<>(usuarioSession, status);
-	}
-	
-	@RequestMapping(
-			method = RequestMethod.GET, 
-			value = "/buscarSeries/{id}", 
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<Serie>> buscarSeries(@PathVariable Long id) {
-		
-		if (logger.isInfoEnabled()) {
-			logger.info("Request to /buscarSeries");
-		}
-		
-		if (!isUsuarioLogado()) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-		
-		Usuario usuario = usuarioService.buscar(id);
-		HttpStatus status = usuario != null ? HttpStatus.OK : HttpStatus.NOT_FOUND;
-		
-		return new ResponseEntity<>(usuario.getSeries(), status);
-	}
-	
 	@RequestMapping(
 			method = RequestMethod.POST, 
 			value = "/login", 
@@ -108,13 +30,19 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> login(@RequestBody Usuario usuario) {
 		
 		if (logger.isInfoEnabled()) {
-			logger.info("Request to /login");
+			logger.info("Request to /usuario/login");
 		}
 		
-		usuarioSession = usuarioService.login(usuario);
-		
-		HttpStatus status = isUsuarioLogado() ? HttpStatus.OK : HttpStatus.UNAUTHORIZED;
-		return new ResponseEntity<>(usuarioSession, status);
+		HttpStatus status;
+		try {
+			usuario = usuarioService.login(usuario);
+			status = HttpStatus.ACCEPTED;
+		} catch (Throwable t) {
+			usuario = null;
+			status = HttpStatus.NOT_ACCEPTABLE;
+		}
+
+		return new ResponseEntity<>(usuario, status);
 	}
 	
 	@RequestMapping(
@@ -125,17 +53,18 @@ public class UsuarioController {
 	public ResponseEntity<Usuario> logout(@RequestBody Usuario usuario) {
 		
 		if (logger.isInfoEnabled()) {
-			logger.info("Request to /logout");
+			logger.info("Request to /usuario/logout");
 		}
 		
-		if (!isUsuarioLogado()) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		HttpStatus status;
+		try {
+			status = HttpStatus.ACCEPTED;
+			// TODO: em breve, quando aprender OAuth ou afins
+		} catch (Throwable t) {
+			status = HttpStatus.NOT_ACCEPTABLE;
 		}
-		
-		usuarioService.atualizar(usuario);
-		usuarioSession = null;
-		
-		return new ResponseEntity<>(HttpStatus.OK);
+				
+		return new ResponseEntity<>(status);
 	}
 	
 	@RequestMapping(
@@ -143,19 +72,22 @@ public class UsuarioController {
 			value = "/cadastrar", 
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Usuario> cadastraUsuario(@RequestBody Usuario usuario) {
+	public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) {
 		
 		if (logger.isInfoEnabled()) {
-			logger.info("Request to /cadastrar");
+			logger.info("Request to /usuario/cadastrar");
 		}
 		
-		if (isUsuarioLogado()) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		HttpStatus status;
+		Usuario usuarioCadastrado = null;
+		try {
+			usuarioCadastrado = usuarioService.cadastrar(usuario);
+			status = HttpStatus.CREATED;
+		} catch (Throwable t) {
+			status = HttpStatus.NOT_ACCEPTABLE;
 		}
 		
-		Usuario usuarioCadastrado = usuarioService.cadastrar(usuario);
-		
-		return new ResponseEntity<>(usuarioCadastrado, HttpStatus.CREATED);
+		return new ResponseEntity<>(usuarioCadastrado, status);
 	}
 	
 	@RequestMapping(
@@ -163,23 +95,21 @@ public class UsuarioController {
 			value = "/deletar", 
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Usuario> deletaUsuario(@RequestBody Usuario usuario) {
+	public ResponseEntity<Usuario> deletar(@RequestBody Usuario usuario) {
 		
 		if (logger.isInfoEnabled()) {
-			logger.info("Request to /deletar");
+			logger.info("Request to /usuario/deletar");
 		}
 		
-		if (!isUsuarioLogado()) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		HttpStatus status;
+		try {
+			usuarioService.deletar(usuario);
+			status = HttpStatus.CREATED;
+		} catch (Throwable t) {
+			status = HttpStatus.NOT_MODIFIED;
 		}
 		
-		usuarioService.deletar(usuario);
-		
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-	
-	private boolean isUsuarioLogado() {
-		return usuarioSession != null;
+		return new ResponseEntity<>(status);
 	}
 	
 }

@@ -5,18 +5,22 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
+@Table(name = "serie")
 public class Serie implements Serializable {
 
 	private static final long serialVersionUID = -8649556478766359360L;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_serie")
 	private Long id;
 
@@ -31,8 +35,12 @@ public class Serie implements Serializable {
 
 	@Column(name = "my_season")
 	private String mySeason;
+	
+	@Column(name = "tipo_serie", nullable = false)
+	private TipoSerie tipoSerie;
 
 	@ManyToOne
+	@JoinColumn(name = "usuario_id")
 	@JsonBackReference
 	private Usuario usuario;
 
@@ -80,6 +88,14 @@ public class Serie implements Serializable {
 		this.mySeason = mySeason;
 	}
 
+	public TipoSerie getTipoSerie() {
+		return tipoSerie;
+	}
+
+	public void setTipoSerie(TipoSerie tipoSerie) {
+		this.tipoSerie = tipoSerie;
+	}
+	
 	public Usuario getUsuario() {
 		return usuario;
 	}
