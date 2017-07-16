@@ -31,6 +31,7 @@
         this.myRating = 0.0;
         this.lastWatchedEpisode = '';
         this.mySeason = 0;
+        this.tipoSerie = '';
       };
   
       serieFactory.prototype.constructor = serieFactory;

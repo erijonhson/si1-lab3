@@ -6,8 +6,8 @@
     module('serie').
     component('serieListing', {
       templateUrl: 'serie/serie-listing.template.html',
-      controller: ['userService', 'modalService',
-        function SerieListingController(userService, modalService) {
+      controller: ['serieService', 'userService', 'modalService',
+        function SerieListingController(serieService, userService, modalService) {
           
           var ctrl = this;
   
@@ -21,6 +21,7 @@
                 mostraAlertaSimples(`A série ` + 
                   serie.Title + ` já está no perfil!`);
             } else {
+              serie.tipoSerie = serieService.tipoSerie.perfil;
               userService.adicioneSerieDeUsuario(serie);
               removeSerie(ctrl.series.list, serie);
             }
@@ -41,6 +42,7 @@
           }
   
           ctrl.adicioneWatchList = function(serie) {
+            serie.tipoSerie = serieService.tipoSerie.watchlist;
             userService.adicioneWatchList(serie);
           }
   

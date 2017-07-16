@@ -4,20 +4,39 @@
   
   angular.
     module('user').
-    service('userService', ['$http', 'endPointsService', function ($http, endPointsService) {
+    service('userService', ['$http', '$rootScope', 'endPointsService', 'serieService', 
+    function ($http, $rootScope, endPointsService, serieService) {
   
       var ctrl = this;
   
+      ctrl.id;
+      ctrl.nome;
+      ctrl.apelido;
+      ctrl.email;
+      ctrl.series;
+      
       ctrl.serieList = {
         list: []
-      }
+      };
   
       ctrl.watchList = {
         list: []
-      }
+      };
   
+      (function init() {
+          if ($rootScope.globals.currentUser) {
+        	  ctrl.id = $rootScope.globals.currentUser.id;
+        	  ctrl.nome = $rootScope.globals.currentUser.nome;
+        	  ctrl.apelido = $rootScope.globals.currentUser.apelido;
+        	  ctrl.email = $rootScope.globals.currentUser.email;
+        	  ctrl.series = $rootScope.globals.currentUser.series;
+        	  ctrl.serieList.list = serieService.getSeriesPorTipo(ctrl.series.list, serieService.tipoSerie.perfil);
+        	  ctrl.watchList.list = serieService.getSeriesPorTipo(ctrl.series.list, serieService.tipoSerie.watchlist);
+          }
+      })();
+      
       ctrl.cadastrar = function(user, callback) {
-    	  $http.post(endPointsService.postCadastrar, user).then(
+          $http.post(endPointsService.postCadastrar, user).then(
               function successCallback (response) {
                   callback(response);
               },

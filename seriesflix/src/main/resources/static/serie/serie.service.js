@@ -10,6 +10,11 @@
       var viaImdbID = 'https://omdbapi.com/?i=IMDBID&apikey=93330d3c&type=series';
       var viaTitle = 'https://omdbapi.com/?s=TITLE&apikey=93330d3c&type=series';
    
+      ctrl.tipoSerie = {
+          perfil: "Perfil", 
+          watchlist: "Watchlist"
+      };
+      
       ctrl.buscarUmaSerie = function(imdbID) {
         return $http.get(viaImdbID.replace('IMDBID', imdbID)).then(
           function (response){
@@ -53,6 +58,28 @@
    
       ctrl.ehSerieValida = function(serie) {
         return serie !== undefined;
+      }
+      
+      ctrl.getSeriesPorTipo = function(lista, tipoSerie) {
+        var listaDeSeries = [];
+        for (var i = 0; i < lista.length; i++) {
+          if (tipoSerie == lista[i].tipoSerie) {
+            $http.get(viaImdbID.replace('IMDBID', lista[i].imdbID)).then(
+                function (response){
+                  if (response.data.Error === undefined) {
+                    var serieOMDB = new serieFactory(response.data);
+                    serieOMDB.myRating = lista[i].myRating;
+                    serieOMDB.lastWatchedEpisode = lista[i].lastWatchedEpisode;
+                    serieOMDB.mySeason = lista[i].mySeason;
+                    serieOMDB.tipoSerie = lista[i].tipoSerie;
+                    listaDeSeries.push(serieOMDB);                    
+                  }
+                },
+                function (response){}
+            );
+          }
+        }
+        return listaDeSeries;
       }
   
       function constroiSeries(seriesOmdbapi) {

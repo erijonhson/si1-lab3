@@ -34,9 +34,11 @@
  
             $rootScope.globals = {
                 currentUser: {
+                	id: user.id,
                     nome: user.nome,
                     apelido: user.apelido,
                     email: user.email,
+                    series: { list: user.series },
                     authdata: authdata
                 }
             };
