@@ -1,5 +1,9 @@
 package com.si1.labs.controller;
 
+import java.util.Date;
+
+import javax.servlet.ServletException;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.si1.labs.model.Usuario;
 import com.si1.labs.service.UsuarioService;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @RestController
 @RequestMapping(value = "/usuario")
@@ -27,22 +34,30 @@ public class UsuarioController {
 			value = "/login", 
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Usuario> login(@RequestBody Usuario usuario) {
+	public LoginResponse login(@RequestBody Usuario usuario) throws ServletException {
 		
 		if (logger.isInfoEnabled()) {
 			logger.info("Request to /usuario/login");
 		}
 		
-		HttpStatus status;
 		try {
-			usuario = usuarioService.login(usuario);
-			status = HttpStatus.ACCEPTED;
+			
+			Usuario usuarioAutenticado = usuarioService.login(usuario);
+			
+			String token = Jwts.builder()
+					.setSubject(usuarioAutenticado.getNome())
+					.signWith(SignatureAlgorithm.HS512, TokenFilter.key)
+					.setExpiration(new Date(System.currentTimeMillis() + 1 * 60 * 1000))
+					.compact();
+			
+			return new LoginResponse(token, usuarioAutenticado);
+			
 		} catch (Throwable t) {
-			usuario = null;
-			status = HttpStatus.NOT_ACCEPTABLE;
+			
+			throw new ServletException("Usuário ou senha inválido.");
+			
 		}
 
-		return new ResponseEntity<>(usuario, status);
 	}
 	
 	@RequestMapping(
@@ -111,5 +126,17 @@ public class UsuarioController {
 		
 		return new ResponseEntity<>(status);
 	}
-	
+
+	private class LoginResponse {
+
+		public String token;
+		public Usuario usuario;
+
+		public LoginResponse(String token, Usuario usuario) {
+			this.token = token;
+			this.usuario = usuario;
+		}
+
+	}
+
 }

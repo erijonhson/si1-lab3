@@ -2,8 +2,8 @@
 
   angular.
     module('serie').
-    service('serieService', ['$http', 'modalService', 'serieFactory',
-    function($http, modalService, serieFactory) {
+    service('serieService', ['$http', 'modalService', 'serieFactory', '$rootScope',
+    function($http, modalService, serieFactory, $rootScope) {
       
       var ctrl = this;
    
@@ -16,8 +16,10 @@
       };
       
       ctrl.buscarUmaSerie = function(imdbID) {
+        $rootScope.globals.currentUser.api = true;
         return $http.get(viaImdbID.replace('IMDBID', imdbID)).then(
           function (response){
+            $rootScope.globals.currentUser.api = false;
             if (response.data.Error !== undefined) {
               modalService.mostraAlertaSimples('Erro: ' + response.data.Error);
               var result = {data: undefined};
@@ -30,6 +32,7 @@
             }
           },
           function (response){
+            $rootScope.globals.currentUser.api = false;
             modalService.mostraAlertaSimples(`Erro de busca ao banco de dados. `
               + `Verifique sua conexão com a internet.`);
             var result = {data: undefined};
@@ -38,9 +41,11 @@
       }
    
       ctrl.buscarSeries = function(tituloDaSerie) {
+        $rootScope.globals.currentUser.api = true;
         var result = {data: undefined};
         return $http.get(viaTitle.replace('TITLE', tituloDaSerie)).then(
           function (response){
+            $rootScope.globals.currentUser.api = false;
             if (response.data.Error !== undefined) {
               modalService.mostraAlertaSimples('Erro: ' + response.data.Error);
               return result;
@@ -50,6 +55,7 @@
             }
           },
           function (response){
+            $rootScope.globals.currentUser.api = true;
             modalService.mostraAlertaSimples(`Erro de busca ao banco de dados. `
               + `Verifique sua conexão com a internet.`);
             return result;

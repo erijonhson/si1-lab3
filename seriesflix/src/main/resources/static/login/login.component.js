@@ -18,6 +18,7 @@
           
           (function initController() {
               // reset login status
+        	  // TODO: fazer isso apenas em logout
               AuthenticationService.ClearCredentials();
           })();
    
