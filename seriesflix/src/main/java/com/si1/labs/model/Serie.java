@@ -24,7 +24,7 @@ public class Serie implements Serializable {
 	@Column(name = "id_serie")
 	private Long id;
 
-	@Column(name = "imdbID", nullable = false, unique = true)
+	@Column(name = "imdbID", nullable = false)
 	private String imdbID;
 
 	@Column(name = "my_rating")
@@ -40,7 +40,7 @@ public class Serie implements Serializable {
 	private TipoSerie tipoSerie;
 
 	@ManyToOne
-	@JoinColumn(name = "usuario_id")
+	@JoinColumn(name = "usuario_id", nullable = false)
 	@JsonBackReference
 	private Usuario usuario;
 
@@ -129,4 +129,8 @@ public class Serie implements Serializable {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return this.imdbID;
+	}
 }

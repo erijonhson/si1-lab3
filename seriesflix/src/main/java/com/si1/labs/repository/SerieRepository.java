@@ -9,7 +9,11 @@ import com.si1.labs.model.Serie;
 public interface SerieRepository extends JpaRepository<Serie, Long> {
 
 	public Serie findById(Long id);
+	
+	public Serie findByImdbID(String imdbID);
 
 	public Set<Serie> findByUsuarioId(Long usuarioId);
+	
+	public void deleteByImdbID(String imdbID);
 
 }

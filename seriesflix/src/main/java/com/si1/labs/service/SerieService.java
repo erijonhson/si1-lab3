@@ -22,8 +22,8 @@ public class SerieService {
 		return serieRepository.save(serie);
 	}
 
-	public Serie buscar(Long id) {
-		return serieRepository.findById(id);
+	public Serie buscar(Serie serie) {
+		return serieRepository.findById(serie.getId());
 	}
 
 	public Set<Serie> buscarSeriesDeUsuario(Long usuarioId) {

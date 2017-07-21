@@ -15,7 +15,9 @@
   
           ctrl.register = function () {
               ctrl.dataLoading = true;
-              userService.cadastrar(ctrl.user, function (data) {
+              const usuario = angular.copy(ctrl.user);
+              usuario.senha = md5(usuario.senha);
+              userService.cadastrar(usuario, function (data) {
                   if (endPointsService.statusOk(data.status)) {
                       modalService.mostraAlertaSimples('Cadastrado com sucesso!');
                       $location.path('/login');

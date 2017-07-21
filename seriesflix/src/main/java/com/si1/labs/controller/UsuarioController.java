@@ -47,7 +47,7 @@ public class UsuarioController {
 			String token = Jwts.builder()
 					.setSubject(usuarioAutenticado.getNome())
 					.signWith(SignatureAlgorithm.HS512, TokenFilter.key)
-					.setExpiration(new Date(System.currentTimeMillis() + 1 * 60 * 1000))
+					.setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 1000))
 					.compact();
 			
 			return new LoginResponse(token, usuarioAutenticado);

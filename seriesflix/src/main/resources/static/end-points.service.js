@@ -12,8 +12,8 @@
       
       ctrl.postLogin = ctrl.basePath + '/usuario/login';
       ctrl.postCadastrar = ctrl.basePath + '/usuario/cadastrar';
-      ctrl.postAdicionaSerie = ctrl.basePath + '/serie/adiciona';
-      ctrl.getRemoveSerie = ctrl.basePath + '/serie/buscarSeries/{usuarioId}';
+      ctrl.postAdicionaSerie = ctrl.basePath + '/serieService/adiciona';
+      ctrl.postRemoveSerie = ctrl.basePath + '/serieService/remove';
       
       ctrl.statusOk = function (status) {
     	  return (status >= 200 && status <= 299);

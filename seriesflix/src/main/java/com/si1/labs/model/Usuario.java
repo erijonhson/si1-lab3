@@ -3,6 +3,7 @@ package com.si1.labs.model;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -135,6 +136,19 @@ public class Usuario implements Serializable {
 		} else if (!email.equals(other.email))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Usuario: " + this.nome);
+		sb.append(" Series: ");
+		Iterator<Serie> it = this.series.iterator();
+		while (it.hasNext()) {
+			Serie s = (Serie) it.next();
+			sb.append(s.toString() + " ");
+		}
+		return sb.toString();
 	}
 
 }

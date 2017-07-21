@@ -4,11 +4,13 @@
   
   angular.
     module('user').
-    service('userService', ['$http', '$rootScope', 'endPointsService', 'serieService', 
-    function ($http, $rootScope, endPointsService, serieService) {
+    service('userService', ['$http', '$rootScope', 'endPointsService', 'serieService', 'modalService', 'serieFactory',
+    function ($http, $rootScope, endPointsService, serieService, modalService, serieFactory) {
   
       var ctrl = this;
   
+      const MENSAGEM_DE_ERRO = 'Servidor temporariamente indisponível! Tente novamente mais tarde.';
+      
       ctrl.id;
       ctrl.nome;
       ctrl.apelido;
@@ -23,17 +25,28 @@
         list: []
       };
   
-      (function init() {
+      ctrl.inicializar = function init() {
           if ($rootScope.globals.currentUser) {
-        	  ctrl.id = $rootScope.globals.currentUser.id;
-        	  ctrl.nome = $rootScope.globals.currentUser.nome;
-        	  ctrl.apelido = $rootScope.globals.currentUser.apelido;
-        	  ctrl.email = $rootScope.globals.currentUser.email;
-        	  ctrl.series = $rootScope.globals.currentUser.series;
-        	  ctrl.serieList.list = serieService.getSeriesPorTipo(ctrl.series.list, serieService.tipoSerie.perfil);
-        	  ctrl.watchList.list = serieService.getSeriesPorTipo(ctrl.series.list, serieService.tipoSerie.watchlist);
+              ctrl.serieList.list = [];
+              ctrl.watchList.list = [];
+              ctrl.id = $rootScope.globals.currentUser.id;
+              ctrl.nome = $rootScope.globals.currentUser.nome;
+              ctrl.apelido = $rootScope.globals.currentUser.apelido;
+              ctrl.email = $rootScope.globals.currentUser.email;
+              ctrl.series = $rootScope.globals.currentUser.series;
+              const todasAsSeries = angular.copy(ctrl.series.list);
+              todasAsSeries.forEach(seriesData => {
+                  const serie = new serieFactory(seriesData);
+                  serie.carregarDetalhes().then(data => {
+                      if (serie.tipoSerie === serieService.tipoSerie.perfil) {
+                        ctrl.serieList.list.push(serie);
+                      } else {
+                        ctrl.watchList.list.push(serie);
+                      }
+                  })
+              })
           }
-      })();
+      };
       
       ctrl.cadastrar = function(user, callback) {
           $http.post(endPointsService.postCadastrar, user).then(
@@ -55,14 +68,30 @@
       }
   
       ctrl.adicioneSerieDeUsuario = function(serie) {
-        if (!ctrl.ehSerieDeUsuario(serie))
-          ctrl.serieList.list.push(serie);
-        if (ctrl.ehWatchList(serie))
-          ctrl.removeWatchList(serie);
+          serie.usuario = {"id": ctrl.id};
+          $http.post(endPointsService.postAdicionaSerie, serie).then(
+              function successCallback (response) {
+                  if (!ctrl.ehSerieDeUsuario(serie))
+                      ctrl.serieList.list.push(serie);
+                  if (ctrl.ehWatchList(serie))
+                      ctrl.removeWatchList(serie);
+              },
+              function errorCallback (response) {
+                  modalService.mostraAlertaSimples(MENSAGEM_DE_ERRO);
+              }
+          );
       }
   
       ctrl.removeSerieDeUsuario = function(serie) {
-        return removeSerie(ctrl.serieList.list, serie);
+          serie.usuario = {"id": ctrl.id};
+          $http.post(endPointsService.postRemoveSerie, serie).then(
+              function successCallback (response) {
+                  return removeSerie(ctrl.serieList.list, serie);
+              },
+              function errorCallback (response) {
+                  modalService.mostraAlertaSimples(MENSAGEM_DE_ERRO);
+              }
+          );
       }
   
       ctrl.ehWatchList = function(serie) {
@@ -70,12 +99,28 @@
       }
   
       ctrl.adicioneWatchList = function(serie) {
-        if (!ctrl.ehWatchList(serie))
-          ctrl.watchList.list.push(serie);
+          serie.usuario = {"id": ctrl.id};
+          $http.post(endPointsService.postAdicionaSerie, serie).then(
+              function successCallback (response) {
+            	  if (!ctrl.ehWatchList(serie))
+                      ctrl.watchList.list.push(serie);
+              },
+              function errorCallback (response) {
+                  modalService.mostraAlertaSimples(MENSAGEM_DE_ERRO);
+              }
+          );
       }
   
       ctrl.removeWatchList = function(serie) {
-        return removeSerie(ctrl.watchList.list, serie);
+    	  serie.usuario = {"id": ctrl.id};
+          $http.post(endPointsService.postRemoveSerie, serie).then(
+              function successCallback (response) {
+            	  return removeSerie(ctrl.watchList.list, serie);
+              },
+              function errorCallback (response) {
+                  modalService.mostraAlertaSimples(MENSAGEM_DE_ERRO);
+              }
+          );
       }
   
       ctrl.getSerie = function(imdbID) {

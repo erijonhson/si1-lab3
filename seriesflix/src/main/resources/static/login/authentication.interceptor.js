@@ -39,7 +39,6 @@
                     apelido: login.usuario.apelido,
                     email: login.usuario.email,
                     series: { list: login.usuario.series },
-                    api: false,
                     token: login.token
                 }
             };

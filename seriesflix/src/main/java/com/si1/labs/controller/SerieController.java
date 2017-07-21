@@ -17,7 +17,7 @@ import com.si1.labs.model.Serie;
 import com.si1.labs.service.SerieService;
 
 @RestController
-@RequestMapping(value = "/testeserie")
+@RequestMapping(value = "/serieService")
 public class SerieController {
 	
 	@Autowired

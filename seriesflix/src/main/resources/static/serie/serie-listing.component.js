@@ -23,7 +23,7 @@
             } else {
               serie.tipoSerie = serieService.tipoSerie.perfil;
               userService.adicioneSerieDeUsuario(serie);
-              removeSerie(ctrl.series.list, serie);
+              // removeSerie(ctrl.series.list, serie);
             }
           }
   

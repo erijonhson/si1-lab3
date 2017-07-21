@@ -16,7 +16,7 @@ import io.jsonwebtoken.SignatureException;
 public class TokenFilter extends GenericFilterBean {
 
 	public static String key = "hightechcursos";
-	private static int tokenPosition = 7;
+	private static int tokenPosition = "Bearer ".length();
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

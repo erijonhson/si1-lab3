@@ -11,11 +11,11 @@ import com.si1.labs.controller.TokenFilter;
 public class SeriesflixApplication {
 
 	@Bean
-	public FilterRegistrationBean filtroJwt() {
+	public FilterRegistrationBean filtroJwt() { 
 		FilterRegistrationBean frb = new FilterRegistrationBean();
 		frb.setFilter(new TokenFilter());
-		frb.addUrlPatterns("/testeserie/*");
-		// frb.addUrlPatterns("/usuario/*");
+		frb.addUrlPatterns("/serieService/*");
+		frb.addUrlPatterns("/usuario/deletar");
 		return frb;
 	}
 

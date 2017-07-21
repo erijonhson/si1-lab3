@@ -16,10 +16,8 @@
       };
       
       ctrl.buscarUmaSerie = function(imdbID) {
-        $rootScope.globals.currentUser.api = true;
         return $http.get(viaImdbID.replace('IMDBID', imdbID)).then(
           function (response){
-            $rootScope.globals.currentUser.api = false;
             if (response.data.Error !== undefined) {
               modalService.mostraAlertaSimples('Erro: ' + response.data.Error);
               var result = {data: undefined};
@@ -32,7 +30,6 @@
             }
           },
           function (response){
-            $rootScope.globals.currentUser.api = false;
             modalService.mostraAlertaSimples(`Erro de busca ao banco de dados. `
               + `Verifique sua conexão com a internet.`);
             var result = {data: undefined};
@@ -41,11 +38,10 @@
       }
    
       ctrl.buscarSeries = function(tituloDaSerie) {
-        $rootScope.globals.currentUser.api = true;
         var result = {data: undefined};
         return $http.get(viaTitle.replace('TITLE', tituloDaSerie)).then(
           function (response){
-            $rootScope.globals.currentUser.api = false;
+            $rootScope.globals.currentUser.app = true;
             if (response.data.Error !== undefined) {
               modalService.mostraAlertaSimples('Erro: ' + response.data.Error);
               return result;
@@ -55,7 +51,6 @@
             }
           },
           function (response){
-            $rootScope.globals.currentUser.api = true;
             modalService.mostraAlertaSimples(`Erro de busca ao banco de dados. `
               + `Verifique sua conexão com a internet.`);
             return result;
@@ -69,25 +64,22 @@
       ctrl.getSeriesPorTipo = function(lista, tipoSerie) {
         var listaDeSeries = [];
         for (var i = 0; i < lista.length; i++) {
-          if (tipoSerie == lista[i].tipoSerie) {
-            $http.get(viaImdbID.replace('IMDBID', lista[i].imdbID)).then(
-                function (response){
-                  if (response.data.Error === undefined) {
-                    var serieOMDB = new serieFactory(response.data);
-                    serieOMDB.myRating = lista[i].myRating;
-                    serieOMDB.lastWatchedEpisode = lista[i].lastWatchedEpisode;
-                    serieOMDB.mySeason = lista[i].mySeason;
-                    serieOMDB.tipoSerie = lista[i].tipoSerie;
-                    listaDeSeries.push(serieOMDB);                    
-                  }
-                },
-                function (response){}
-            );
+          if (tipoSerie === lista[i].tipoSerie) {
+            var imdbID = lista[i].imdbID;
+            var serieOMDB = ctrl.buscarUmaSerie(imdbID)
+            if (serieOMDB.data !== undefined) {
+                var serieOMDB = new serieFactory(response.data);
+                serieOMDB.myRating = lista[i].myRating;
+                serieOMDB.lastWatchedEpisode = lista[i].lastWatchedEpisode;
+                serieOMDB.mySeason = lista[i].mySeason;
+                serieOMDB.tipoSerie = lista[i].tipoSerie;
+                listaDeSeries.push(serieOMDB);
+            }
           }
         }
         return listaDeSeries;
       }
-  
+      
       function constroiSeries(seriesOmdbapi) {
         var listaDeSeries = [];
         for (var i = 0; i < seriesOmdbapi.length; i++) {
